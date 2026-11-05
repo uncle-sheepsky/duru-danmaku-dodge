@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>탄막 3,490발 뷰어</title>
+<style>
+  html,body{margin:0;background:#0c0b24;color:#eee;font:15px/1.5 system-ui,sans-serif}
+  #w{display:flex;flex-wrap:wrap;gap:16px;padding:16px;justify-content:center}
+  canvas{background:#04040f;border:2px solid #ffc84c;border-radius:12px;height:min(86vh,960px);aspect-ratio:9/16}
+  #p{max-width:320px;min-width:240px}
+  button{font:inherit;padding:6px 12px;margin:0 6px 6px 0;background:#2a2a55;color:#fff;border:1px solid #666;border-radius:6px;cursor:pointer}
+  input[type=range]{width:100%}
+  b{color:#ffc84c}
+  code{color:#06ECD2}
+</style>
+</head>
+<body>
+<div id="w">
+  <canvas id="cv" width="1080" height="1920"></canvas>
+  <div id="p">
+    <p><button id="play">재생</button><button id="near">최근접 순간</button><button id="bomb">폭탄 직전</button></p>
+    <input id="t" type="range" min="0" max="13.2" step="0.001" value="0">
+    <p>게임 시각 <b id="tv"></b>초<br>지금 화면 위 탄 <b id="n"></b>발<br>가장 가까운 탄까지 <b id="d"></b>px (판정 <span id="r"></span>px)<br>멜론 체력 <b id="hp"></b></p>
+    <p>동그라미는 자리표시입니다. 탄·기체·보스 위치는 전부 <code>danmaku_engine.js</code> 값입니다. 콘솔에서 <code>__seekTo(초)</code>로 아무 시점이나 볼 수 있습니다.</p>
+  </div>
+</div>
+<script type="module">
+import * as E from './danmaku_engine.js';
+import { PARAMS, EXPECT } from './remake/config.js';
+const S = E.build({ ...PARAMS });
+const cv = document.getElementById('cv'), g = cv.getContext('2d');
+const $ = id => document.getElementById(id);
+$('r').textContent = S.C.R_HIT;
+function draw(t) {
+  g.fillStyle = '#04040f'; g.fillRect(0, 0, 1080, 1920);
+  const o = S.bossPos(Math.min(t, S.tDie));
+  if (t < S.tDie) { g.fillStyle = '#8fd14f'; g.beginPath(); g.arc(o.x, o.y, S.BR, 0, 6.2832); g.fill(); }
+  const p = S.player(t);
+  let m = Infinity, q = null, n = 0;
+  for (const b of S.bullets) {
+    if (t < b.t0 || t >= b.tEnd) continue;
+    const c = E.bpos(b, t); if (!c) continue;
+    if (c.x > -30 && c.x < 1110 && c.y > -30 && c.y < 1950) n++;
+    const d = Math.hypot(c.x - p.x, c.y - p.y); if (d < m) { m = d; q = c; }
+    g.fillStyle = b.color; g.beginPath(); g.arc(c.x, c.y, 7.5, 0, 6.2832); g.fill();
+  }
+  g.fillStyle = '#ffc84c'; g.beginPath(); g.arc(p.x, p.y, 44, 0, 6.2832); g.fill();
+  g.strokeStyle = '#06ECD2'; g.lineWidth = 3; g.beginPath(); g.arc(p.x, p.y, S.C.R_HIT, 0, 6.2832); g.stroke();
+  if (q && m < 80) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(q.x, q.y); g.stroke(); }
+  $('tv').textContent = t.toFixed(3); $('n').textContent = n.toLocaleString('en-US');
+  $('d').textContent = isFinite(m) ? m.toFixed(2) : '-';
+  $('hp').textContent = (S.hpKey.filter(k => k[0] <= t).pop() || [0, S.BOSS_HP])[1];
+  $('t').value = t;
+}
+window.__seekTo = draw;
+let playing = false, last = 0;
+function tick(now) {
+  if (!playing) return;
+  const nt = +$('t').value + (now - last) / 1000; last = now;
+  if (nt >= +$('t').max) { playing = false; $('play').textContent = '재생'; return; }
+  draw(nt); requestAnimationFrame(tick);
+}
+$('play').onclick = () => { playing = !playing; $('play').textContent = playing ? '멈춤' : '재생'; last = performance.now(); if (playing) requestAnimationFrame(tick); };
+$('near').onclick = () => { playing = false; $('play').textContent = '재생'; draw(EXPECT.contMinAt); };
+$('bomb').onclick = () => { playing = false; $('play').textContent = '재생'; draw(206 / 30); };
+$('t').oninput = e => draw(+e.target.value);
+draw(0);
+</script>
+</body>
+</html>

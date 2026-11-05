@@ -1,0 +1,12 @@
+node_modules/
+remake/assets/
+remake/data/
+remake/out/
+remake/gates/
+remake/gsap.min.js
+remake/bgm/out/
+remake/mix/out/
+remake/tools/out/
+__pycache__/
+*.wav
+*.mp4
