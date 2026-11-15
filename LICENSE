@@ -11,7 +11,10 @@ CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
   remake/bgm/build_bgm.py 가 만드는 음악, remake/mix/build_sfx.py 가 만드는 효과음
 
 ── 이 저장소에 없고, CC0 대상도 아닌 것 ─────────────────────────────
-  게시된 영상 파일 · 영상에 나오는 두루·멜론·배경 그림(GPT 로 만든 그림) · 썸네일
+  게시된 영상 파일 · 영상에 나오는 멜론·배경 그림(GPT 로 만든 그림) · 썸네일
+
+── 이 저장소에 없지만 CC0 인 것 ──────────────────────────────────
+  영상에 나오는 두루 그림(GPT 로 만든 그림) : https://github.com/uncle-sheepsky/duru-art
 
 ── 따로 받아서 쓰는 것(각자의 라이선스) ─────────────────────────────
   VSCO 2 Community Edition 샘플 : CC0 — https://github.com/sgossner/VSCO-2-CE

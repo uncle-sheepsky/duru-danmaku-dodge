@@ -103,5 +103,5 @@ python remake/mix/final_mix.py --bgm v3 --video out/video.mp4 --out out/final.mp
 
 ## 이 저장소에 없는 것
 
-- 영상 파일, 두루·멜론·배경 그림, 썸네일. 그림은 GPT 로 만들었습니다.
+- 영상 파일, 두루·멜론·배경 그림, 썸네일. 그림은 GPT 로 만들었습니다. 두루 그림은 [duru-art](https://github.com/uncle-sheepsky/duru-art) 에 CC0 로 따로 올렸습니다.
 - 샘플, 글꼴, GSAP, Playwright 는 따로 받습니다. 라이선스는 [`LICENSE`](LICENSE) 에 자산별로 적었습니다.
